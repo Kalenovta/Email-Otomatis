@@ -2,132 +2,43 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# Funsi untuk mengirim email
-def kirim_email(pengirim, penerima, subject, html_content):
-    # konfigurasi server SMTP
-    server = smtplib.SMTP('smtp.gamil.com', 587)
-    server.starttls()
-    server.login(pengirim, 'nihy wzkm duax fchy')
+def send_email(to_email, subject, message):
+    # Informasi akun email pengirim
+    from_email = "kalenovtakhoirulanwar@gmail.com"
+    from_password = "nihy wzkm duax fchy"
 
-    # Membuat object email
+    # Mengatur server SMTP Gmail
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+
+    # Membuat pesan email
     msg = MIMEMultipart()
-    msg['From'] = pengirim
-    msg['To'] = penerima
-    msg['Subject'] = subject
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
 
-    # Menyisipkan konten HTML ke dalam email
-    msg.attach(MIMEText(html_content, 'html'))
+    # Menambahkan pesan email ke dalam badan email
+    msg.attach(MIMEText(message, "plain"))
 
-    # Mengirim email
-    server.send_message(msg)
-    server.quit()
+    try:
+        # Koneksi ke server SMTP
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Mengamankan koneksi
+        server.login(from_email, from_password)  # Login ke akun pengirim
 
-    #Membuat template html untuk email
-    html_template = """
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="project.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Project</title>
-    <style>
-    body{
-    margin: 0;
-}
+        # Mengirim email
+        server.sendmail(from_email, to_email, msg.as_string())
+        print("Email berhasil dikirim!")
 
-nav{
-    background-color: black;
-    color: white;
-    padding: 2px;
-    font-size: 19px;
-    text-align: right;
-    margin: 0;
-}
-
-.H:hover{
-    text-decoration: underline;
+    except Exception as e:
+        print(f"Gagal mengirim email: {e}")
     
-}
+    finally:
+        server.quit()
 
-.G{
-    display: inline;
-    padding: 1rem;
-    font-family: 'Roboto', sans-serif;
-    margin-right: 45rem;
+# Penggunaan fungsi
+recipient = "sadiyah.rpl@gmail.com"
+subject = "Nama : Kalenovta Khoirul Anwar/12"
+message = "Ini adalah pengirim email otomatis menggunakan python"
 
-}
-
-.H{
-    display: inline;
-    padding: 1rem;
-    margin-right: 5rem;
-    font-family: 'Roboto', sans-serif;
-}
-.A{
-    text-decoration: none;
-    color: white;
-}
-#Home{
-    display: flex;
-    flex-direction: row;
-}
-.datang{
-    font-size: 75px;
-    padding: 2rem;
-    width: 39rem;
-    margin: 9rem;
-    font-family: 'Roboto', sans-serif;
-}
-.Komputer{
-    width: 350px;
-    height: 350px;
-    margin-top: 8rem;
-    
-   
-
-}
-main{
-    display: flex;
-    flex-direction: row;
-}
-
-    </style>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="G">Project Dicoding</li>
-                <li class="H">
-                    <a href="#" class="A">Home</a>
-                </li>
-                <li class="H">
-                    <a href="#" class="A">About</a>
-                </li>
-                <li class="H">
-                    <a href="#" class="A">Contact</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-    <div id="Home">
-        <p class="datang">Selamat datang di projek saya untuk dicoding</p>
-        <img class="Komputer" src="dicoding-removebg-preview.png" alt="">
-      </div>
-    <main>
-        <article></article>
-        <aside></aside>
-    </main>
-    <footer></footer>
-</body>
-</html>
-"""
-
-
-
-pengirim = 'kalenovtakhoirulanwar@gmail.com'
-penerima = 'kingnovta@gmail.com'
-subject =  'rawrrr'
+send_email(recipient, subject, message)
